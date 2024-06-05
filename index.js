@@ -33,6 +33,10 @@ io.on('connection', (socket) => {
 
   });
 
+  socket.on('typing', (data) => {
+    socket.broadcast.to(data.roomId).emit('someone_typing');
+  });
+
 });
 
 app.set('view engine', 'ejs');

@@ -12,6 +12,7 @@
 
     <input type="text" id="username" placeholder="user id..." />
     <input type="text" id="newmsg" placeholder="message..." />
+    <span id="typing">typing...</span>
     <button id="btn">Send</button>
     <ul id="msglist">
       <% for (let i = 0; i < chats.length; i++) { %> 
@@ -27,7 +28,12 @@
 
       let startChat = document.getElementById("startChat");
 
+      let recieveTypingId = null;
+      let typingId = null;
+
       let btn = document.getElementById("btn");
+      let spanTyping = document.getElementById("typing");
+      spanTyping.style.display = "none";
       let inputMsg = document.getElementById("newmsg");
       let username = document.getElementById("username");
       let msgList = document.getElementById("msglist");
@@ -51,6 +57,40 @@
         // limsg.innerText = data.msg;
         msgList.appendChild(limsg);
       });
+
+      socket.on('someone_typing', (data) =>{
+        spanTyping.style.display = "block";
+         
+        clearTimeout(recieveTypingId);
+        recieveTypingId = setTimeout(() => {
+          
+          spanTyping.style.display = "none";
+
+         }, 2000);
+       
+        
+        typing = false;
+      });
+
+      });
+     
+
+      inputMsg.addEventListener("keypress", function (e) {
+        
+        socket.emit('typing',{
+          roomId: startChat.getAttribute('data-roomId')
+        });
+        clearTimeout(typingId);
+        typingId = setTimeout(() => {
+          
+          spanTyping.style.display = "none";
+
+         }, 2000);
+       
+        
+        typing = false;
+      });
+      
     </script>
   </body>
 </html>
